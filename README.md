@@ -130,7 +130,7 @@ Originally created by [Félix Saparelli] and awesome [contributors].
 
 ```kotlin
 dependencies {
-    implementation("io.github.kotlinmania:notify-kotlin:0.1.0-SNAPSHOT")
+    implementation("io.github.kotlinmania:notify-kotlin:0.1.0")
 }
 ```
 
