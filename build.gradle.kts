@@ -199,10 +199,18 @@ kotlin {
         binaries.framework { baseName = "Notify"; xcf.add(this) }
     }
     iosSimulatorArm64 {
-        binaries.framework { baseName = "Notify"; xcf.add(this) }
+        binaries.framework {
+            baseName = "Notify"
+            isStatic = true
+            xcf.add(this)
+        }
     }
     iosX64 {
-        binaries.framework { baseName = "Notify"; xcf.add(this) }
+        binaries.framework {
+            baseName = "Notify"
+            isStatic = true
+            xcf.add(this)
+        }
     }
 
     tvosArm64 {
