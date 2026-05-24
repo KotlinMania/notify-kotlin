@@ -1,5 +1,4 @@
 {
-  "parity_mode": false,
   "type": "inventory",
   "parity": false,
   "name": "notify-kotlin",
