@@ -72,8 +72,7 @@ data class Config(
      *
      * This will disable automatic polling, overwriting [withPollInterval].
      */
-    fun withManualPolling(): Config =
-        copy(pollIntervalValue = null)
+    fun withManualPolling(): Config = copy(pollIntervalValue = null)
 
     /**
      * For the `PollWatcher` backend.
@@ -87,8 +86,7 @@ data class Config(
      *
      * This cannot be changed during runtime. Off by default.
      */
-    fun withCompareContents(compareContents: Boolean): Config =
-        copy(compareContentsValue = compareContents)
+    fun withCompareContents(compareContents: Boolean): Config = copy(compareContentsValue = compareContents)
 
     /**
      * Returns current setting.
@@ -102,8 +100,7 @@ data class Config(
      *
      * This cannot be changed during runtime. On by default.
      */
-    fun withFollowSymlinks(followSymlinks: Boolean): Config =
-        copy(followSymlinksValue = followSymlinks)
+    fun withFollowSymlinks(followSymlinks: Boolean): Config = copy(followSymlinksValue = followSymlinks)
 
     /**
      * Returns current setting.
