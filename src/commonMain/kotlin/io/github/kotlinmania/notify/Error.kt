@@ -1,9 +1,5 @@
 // port-lint: source error.rs
-@file:OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)
-
 package io.github.kotlinmania.notify
-
-import kotlin.native.HiddenFromObjC
 
 /**
  * Type alias to use this library's Error type in a Result.
@@ -13,7 +9,6 @@ public typealias Result<T> = kotlin.Result<T>
 /**
  * Error kinds supported by notify.
  */
-@HiddenFromObjC
 public sealed class ErrorKind {
     /**
      * Generic error.
@@ -57,7 +52,6 @@ public sealed class ErrorKind {
  * Errors can be general, or they can be about specific paths or subtrees. In that later case, the
  * error's paths field will be populated.
  */
-@HiddenFromObjC
 public class Error(
     public val kind: ErrorKind,
     public val paths: List<String> = emptyList(),
@@ -87,11 +81,6 @@ public class Error(
             is ErrorKind.Io -> kind.cause
             else -> null
         }
-
-    /**
-     * Returns the inner cause of the error.
-     */
-    public fun cause(): Throwable? = cause
 
     /**
      * Adds a path to the error.

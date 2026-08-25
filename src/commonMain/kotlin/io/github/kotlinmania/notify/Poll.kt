@@ -36,10 +36,6 @@ public class MetaPath(
     public val path: String,
     public val metadata: Any? = null,
 ) {
-    public fun path(): String = path
-
-    public fun metadata(): Any? = metadata
-
     public fun intoPath(): String = path
 
     public fun fmt(): String = "MetaPath($path)"
