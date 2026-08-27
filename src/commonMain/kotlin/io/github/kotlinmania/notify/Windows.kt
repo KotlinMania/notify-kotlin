@@ -1,7 +1,9 @@
 // port-lint: source windows.rs
 package io.github.kotlinmania.notify
 
-public class ReadData(public val buffer: ByteArray = ByteArray(0))
+public class ReadData(
+    public val buffer: ByteArray = ByteArray(0),
+)
 
 public class ReadDirectoryRequest(
     public val path: String,
@@ -9,13 +11,25 @@ public class ReadDirectoryRequest(
 )
 
 public sealed class Action {
-    public data class Watch(public val path: String, public val recursive: Boolean) : Action()
-    public data class Unwatch(public val path: String) : Action()
+    public data class Watch(
+        public val path: String,
+        public val recursive: Boolean,
+    ) : Action()
+
+    public data class Unwatch(
+        public val path: String,
+    ) : Action()
+
     public data object Stop : Action()
-    public data class ConfigureRaw(public val raw: Boolean) : Action()
+
+    public data class ConfigureRaw(
+        public val raw: Boolean,
+    ) : Action()
 }
 
-public class MetaEvent(public val event: Event)
+public class MetaEvent(
+    public val event: Event,
+)
 
 public enum class WatchState {
     Active,
@@ -99,9 +113,7 @@ public class ReadDirectoryChangesWatcher private constructor(
         return server.sendActionRequireAck(Action.Watch(path, isRecursive))
     }
 
-    public fun unwatchInner(path: String): Result<Unit> {
-        return server.sendActionRequireAck(Action.Unwatch(path))
-    }
+    public fun unwatchInner(path: String): Result<Unit> = server.sendActionRequireAck(Action.Unwatch(path))
 
     public fun drop() {
         server.sendActionRequireAck(Action.Stop)

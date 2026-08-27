@@ -5,12 +5,21 @@ public class KqueueWatcher private constructor(
     private val eventHandler: EventHandler,
     private var config: Config,
 ) : Watcher {
-
     public sealed class EventLoopMsg {
-        public data class AddWatch(public val path: String, public val recursiveMode: RecursiveMode) : EventLoopMsg()
-        public data class RemoveWatch(public val path: String) : EventLoopMsg()
+        public data class AddWatch(
+            public val path: String,
+            public val recursiveMode: RecursiveMode,
+        ) : EventLoopMsg()
+
+        public data class RemoveWatch(
+            public val path: String,
+        ) : EventLoopMsg()
+
         public data object Shutdown : EventLoopMsg()
-        public data class Configure(public val config: Config) : EventLoopMsg()
+
+        public data class Configure(
+            public val config: Config,
+        ) : EventLoopMsg()
     }
 
     public class EventLoop(
@@ -46,9 +55,7 @@ public class KqueueWatcher private constructor(
             addWatch(path, recursiveMode)
         }
 
-        public fun removeWatch(path: String): Boolean {
-            return watches.remove(path) != null
-        }
+        public fun removeWatch(path: String): Boolean = watches.remove(path) != null
 
         public fun mapWalkdirError(err: Throwable): Error = Error.io(err)
     }
@@ -66,13 +73,12 @@ public class KqueueWatcher private constructor(
         return Result.success(Unit)
     }
 
-    public fun unwatchInner(path: String): Result<Unit> {
-        return if (eventLoop.removeWatch(path)) {
+    public fun unwatchInner(path: String): Result<Unit> =
+        if (eventLoop.removeWatch(path)) {
             Result.success(Unit)
         } else {
             Result.failure(Error.watchNotFound().addPath(path))
         }
-    }
 
     public fun drop() {
         eventLoop.handleEvent(EventLoopMsg.Shutdown)

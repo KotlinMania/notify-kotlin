@@ -7,14 +7,19 @@ package io.github.kotlinmania.notify
 public enum class WatcherKind {
     /** inotify backend (linux) */
     Inotify,
+
     /** FS-Event backend (mac) */
     Fsevent,
+
     /** KQueue backend (bsd, optionally mac) */
     Kqueue,
+
     /** Polling based backend (fallback) */
     PollWatcher,
+
     /** Windows backend */
     ReadDirectoryChangesWatcher,
+
     /** Fake watcher for testing */
     NullWatcher,
 }
@@ -91,7 +96,9 @@ public interface Watcher {
 /**
  * Default PathsMut implementation wrapping a Watcher.
  */
-public class DefaultPathsMut(private val watcher: Watcher) : PathsMut {
+public class DefaultPathsMut(
+    private val watcher: Watcher,
+) : PathsMut {
     override fun add(path: String, recursiveMode: RecursiveMode): Result<Unit> =
         watcher.watch(path, recursiveMode)
 

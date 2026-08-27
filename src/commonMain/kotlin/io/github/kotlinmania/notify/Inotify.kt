@@ -5,12 +5,21 @@ public class INotifyWatcher private constructor(
     private val eventHandler: EventHandler,
     private var config: Config,
 ) : Watcher {
-
     public sealed class EventLoopMsg {
-        public data class AddWatch(public val path: String, public val recursiveMode: RecursiveMode) : EventLoopMsg()
-        public data class RemoveWatch(public val path: String) : EventLoopMsg()
+        public data class AddWatch(
+            public val path: String,
+            public val recursiveMode: RecursiveMode,
+        ) : EventLoopMsg()
+
+        public data class RemoveWatch(
+            public val path: String,
+        ) : EventLoopMsg()
+
         public data object Shutdown : EventLoopMsg()
-        public data class Configure(public val config: Config) : EventLoopMsg()
+
+        public data class Configure(
+            public val config: Config,
+        ) : EventLoopMsg()
     }
 
     public class EventLoop(
@@ -48,9 +57,7 @@ public class INotifyWatcher private constructor(
             addWatch(path, recursiveMode)
         }
 
-        public fun removeWatch(path: String): Boolean {
-            return watches.remove(path) != null
-        }
+        public fun removeWatch(path: String): Boolean = watches.remove(path) != null
 
         public fun removeAllWatches() {
             watches.clear()
@@ -72,13 +79,12 @@ public class INotifyWatcher private constructor(
         return Result.success(Unit)
     }
 
-    public fun unwatchInner(path: String): Result<Unit> {
-        return if (eventLoop.removeWatch(path)) {
+    public fun unwatchInner(path: String): Result<Unit> =
+        if (eventLoop.removeWatch(path)) {
             Result.success(Unit)
         } else {
             Result.failure(Error.watchNotFound().addPath(path))
         }
-    }
 
     public fun addWatchByEvent(path: String, recursiveMode: RecursiveMode) {
         eventLoop.handleEvent(EventLoopMsg.AddWatch(path, recursiveMode))
