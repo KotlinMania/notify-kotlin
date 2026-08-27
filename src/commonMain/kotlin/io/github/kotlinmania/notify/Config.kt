@@ -1,4 +1,4 @@
-// port-lint: source notify/src/config.rs
+// port-lint: source config.rs
 package io.github.kotlinmania.notify
 
 import kotlin.time.Duration
