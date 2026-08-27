@@ -1,4 +1,4 @@
-// port-lint: tests notify/src/inotify.rs
+// port-lint: tests inotify.rs
 package io.github.kotlinmania.notify
 
 import kotlin.test.Test

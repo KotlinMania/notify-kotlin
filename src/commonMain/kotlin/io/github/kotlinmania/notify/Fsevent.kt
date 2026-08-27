@@ -1,4 +1,4 @@
-// port-lint: source notify/src/fsevent.rs
+// port-lint: source fsevent.rs
 package io.github.kotlinmania.notify
 
 public class StreamContextInfo(

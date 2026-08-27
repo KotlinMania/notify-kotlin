@@ -1,12 +1,5 @@
-// port-lint: source notify/src/lib.rs
+// port-lint: source lib.rs
 package io.github.kotlinmania.notify
-
-public typealias Receiver<T> = Any
-public typealias Sender<T> = Any
-public typealias BoundSender<T> = Any
-
-public fun <T> unbounded(): Pair<Any, Any> = Pair(Unit, Unit)
-public fun <T> bounded(cap: Int): Pair<Any, Any> = Pair(Unit, Unit)
 
 /**
  * Watcher kind enumeration.
