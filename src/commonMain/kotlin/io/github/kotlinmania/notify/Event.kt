@@ -1,3 +1,4 @@
+// port-lint: source notify/src/lib.rs
 @file:OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)
 
 package io.github.kotlinmania.notify

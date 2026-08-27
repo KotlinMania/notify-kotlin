@@ -1,4 +1,4 @@
-// port-lint: source kqueue.rs
+// port-lint: source notify/src/kqueue.rs
 package io.github.kotlinmania.notify
 
 public class KqueueWatcher private constructor(

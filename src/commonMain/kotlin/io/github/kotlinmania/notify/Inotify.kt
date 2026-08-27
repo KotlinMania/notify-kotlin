@@ -1,4 +1,4 @@
-// port-lint: source inotify.rs
+// port-lint: source notify/src/inotify.rs
 package io.github.kotlinmania.notify
 
 public class INotifyWatcher private constructor(
