@@ -1,4 +1,4 @@
-// port-lint: tests kqueue.rs
+// port-lint: tests notify/src/kqueue.rs
 package io.github.kotlinmania.notify
 
 import kotlin.test.Test

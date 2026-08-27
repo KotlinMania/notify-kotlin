@@ -1,4 +1,4 @@
-// port-lint: source null.rs
+// port-lint: source notify/src/null.rs
 package io.github.kotlinmania.notify
 
 /**
