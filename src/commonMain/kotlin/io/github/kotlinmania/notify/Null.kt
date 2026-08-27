@@ -7,7 +7,6 @@ package io.github.kotlinmania.notify
  * Events are never delivered from this watcher.
  */
 public class NullWatcher private constructor() : Watcher {
-
     override fun watch(path: String, recursiveMode: RecursiveMode): Result<Unit> =
         Result.success(Unit)
 

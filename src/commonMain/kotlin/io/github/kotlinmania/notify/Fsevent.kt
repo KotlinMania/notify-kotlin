@@ -5,12 +5,17 @@ public class StreamContextInfo(
     public val eventHandler: EventHandler,
 ) {
     public fun releaseContext() {}
+
     public fun fmt(): String = "StreamContextInfo"
 }
 
-public class CFSendWrapper(public val ptr: Long = 0L)
+public class CFSendWrapper(
+    public val ptr: Long = 0L,
+)
 
-public class FsEventPathsMut(private val watcher: FsEventWatcher) : PathsMut {
+public class FsEventPathsMut(
+    private val watcher: FsEventWatcher,
+) : PathsMut {
     override fun add(path: String, recursiveMode: RecursiveMode): Result<Unit> =
         watcher.watch(path, recursiveMode)
 
@@ -42,13 +47,12 @@ public class FsEventWatcher private constructor(
         return Result.success(Unit)
     }
 
-    public fun unwatchInner(path: String): Result<Unit> {
-        return if (watches.remove(path) != null) {
+    public fun unwatchInner(path: String): Result<Unit> =
+        if (watches.remove(path) != null) {
             Result.success(Unit)
         } else {
             Result.failure(Error.watchNotFound().addPath(path))
         }
-    }
 
     public fun isRunning(): Boolean = running
 

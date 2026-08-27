@@ -38,9 +38,10 @@ class LibTest {
     @Test
     fun integration() {
         val received = mutableListOf<Event>()
-        val watcher = recommendedWatcher { res ->
-            res.getOrNull()?.let { received.add(it) }
-        }.getOrThrow()
+        val watcher =
+            recommendedWatcher { res ->
+                res.getOrNull()?.let { received.add(it) }
+            }.getOrThrow()
 
         val path = "/tmp/integration_dir"
         val res = watcher.watch(path, RecursiveMode.Recursive)

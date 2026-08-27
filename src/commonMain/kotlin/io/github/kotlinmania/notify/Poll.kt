@@ -23,7 +23,9 @@ public interface ScanEventHandler {
     }
 }
 
-public class DefaultScanEventHandler(private val callback: (ScanEvent) -> Unit) : ScanEventHandler {
+public class DefaultScanEventHandler(
+    private val callback: (ScanEvent) -> Unit,
+) : ScanEventHandler {
     override fun handleEvent(event: ScanEvent) {
         callback(event)
     }
@@ -62,8 +64,8 @@ public class PathData(
             path: String,
             old: PathData?,
             new: PathData?,
-        ): Event? {
-            return when {
+        ): Event? =
+            when {
                 old != null && new != null -> {
                     if (new.mtime > old.mtime) {
                         Event(EventKind.Modify(ModifyKind.Metadata(MetadataKind.WriteTime)), listOf(path))
@@ -77,14 +79,15 @@ public class PathData(
                 old != null && new == null -> Event(EventKind.Remove(RemoveKind.Any), listOf(path))
                 else -> null
             }
-        }
     }
 }
 
 /**
  * Thin wrapper for event handler emission.
  */
-public class EventEmitter(private val eventHandler: EventHandler) {
+public class EventEmitter(
+    private val eventHandler: EventHandler,
+) {
     public fun emit(event: Result<Event>) {
         eventHandler.handleEvent(event)
     }
@@ -178,13 +181,12 @@ public class PollWatcher private constructor(
         return Result.success(Unit)
     }
 
-    public fun unwatchInner(path: String): Result<Unit> {
-        return if (watches.remove(path) != null) {
+    public fun unwatchInner(path: String): Result<Unit> =
+        if (watches.remove(path) != null) {
             Result.success(Unit)
         } else {
             Result.failure(Error.watchNotFound().addPath(path))
         }
-    }
 
     override fun configure(option: Config): Result<Boolean> {
         this.config = option

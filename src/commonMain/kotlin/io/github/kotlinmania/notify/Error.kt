@@ -15,12 +15,16 @@ public sealed class ErrorKind {
      *
      * May be used in cases where a platform specific error is mapped to this type, or for opaque internal errors.
      */
-    public data class Generic(public val message: String) : ErrorKind()
+    public data class Generic(
+        public val message: String,
+    ) : ErrorKind()
 
     /**
      * I/O errors.
      */
-    public data class Io(public val cause: Throwable) : ErrorKind()
+    public data class Io(
+        public val cause: Throwable,
+    ) : ErrorKind()
 
     /**
      * A path does not exist.
@@ -35,7 +39,9 @@ public sealed class ErrorKind {
     /**
      * An invalid value was passed as runtime configuration.
      */
-    public data class InvalidConfig(public val config: Config) : ErrorKind()
+    public data class InvalidConfig(
+        public val config: Config,
+    ) : ErrorKind()
 
     /**
      * Cannot watch more files; limit on total watches reached.
@@ -56,19 +62,19 @@ public class Error(
     public val kind: ErrorKind,
     public val paths: List<String> = emptyList(),
 ) : Exception() {
-
     public constructor(kind: ErrorKind) : this(kind, emptyList())
 
     override val message: String
         get() {
-            val description = when (val k = kind) {
-                is ErrorKind.PathNotFound -> "No path was found."
-                is ErrorKind.WatchNotFound -> "No watch was found."
-                is ErrorKind.InvalidConfig -> "Invalid configuration: ${k.config}"
-                is ErrorKind.Generic -> k.message
-                is ErrorKind.Io -> k.cause.message ?: k.cause.toString()
-                is ErrorKind.MaxFilesWatch -> "OS file watch limit reached."
-            }
+            val description =
+                when (val k = kind) {
+                    is ErrorKind.PathNotFound -> "No path was found."
+                    is ErrorKind.WatchNotFound -> "No watch was found."
+                    is ErrorKind.InvalidConfig -> "Invalid configuration: ${k.config}"
+                    is ErrorKind.Generic -> k.message
+                    is ErrorKind.Io -> k.cause.message ?: k.cause.toString()
+                    is ErrorKind.MaxFilesWatch -> "OS file watch limit reached."
+                }
             return if (paths.isEmpty()) {
                 description
             } else {
@@ -77,10 +83,11 @@ public class Error(
         }
 
     override val cause: Throwable?
-        get() = when (kind) {
-            is ErrorKind.Io -> kind.cause
-            else -> null
-        }
+        get() =
+            when (kind) {
+                is ErrorKind.Io -> kind.cause
+                else -> null
+            }
 
     /**
      * Adds a path to the error.
