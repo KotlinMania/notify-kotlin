@@ -1,4 +1,4 @@
-// port-lint: tests error.rs
+// port-lint: tests notify/src/error.rs
 package io.github.kotlinmania.notify
 
 import kotlin.test.Test

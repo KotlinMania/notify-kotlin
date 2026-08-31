@@ -1,4 +1,4 @@
-// port-lint: tests poll.rs
+// port-lint: tests notify/src/poll.rs
 package io.github.kotlinmania.notify
 
 import kotlin.test.Test
