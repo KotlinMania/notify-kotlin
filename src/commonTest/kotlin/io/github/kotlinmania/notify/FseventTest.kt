@@ -1,4 +1,4 @@
-// port-lint: tests fsevent.rs
+// port-lint: tests notify/src/fsevent.rs
 package io.github.kotlinmania.notify
 
 import kotlin.test.Test
