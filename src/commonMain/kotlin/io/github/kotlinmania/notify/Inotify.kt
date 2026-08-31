@@ -45,7 +45,9 @@ public class INotifyWatcher private constructor(
 
         public fun handleMessages() {}
 
-        public fun configureRawMode(rawMode: Boolean) {}
+        public fun configureRawMode(rawMode: Boolean) {
+            rawMode.hashCode()
+        }
 
         public fun handleInotify() {}
 

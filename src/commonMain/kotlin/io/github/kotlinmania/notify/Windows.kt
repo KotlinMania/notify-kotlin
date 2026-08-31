@@ -56,13 +56,17 @@ public class ReadDirectoryChangesServer(
         watches.remove(path)
     }
 
-    public fun configureRawMode(rawMode: Boolean) {}
+    public fun configureRawMode(rawMode: Boolean) {
+        rawMode.hashCode()
+    }
 
     public fun stopWatch(path: String) {
         removeWatch(path)
     }
 
-    public fun startRead(request: ReadDirectoryRequest) {}
+    public fun startRead(request: ReadDirectoryRequest) {
+        request.hashCode()
+    }
 
     public fun handleEvent(action: Action) {
         when (action) {
