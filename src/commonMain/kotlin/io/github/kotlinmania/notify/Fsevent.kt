@@ -70,7 +70,9 @@ public class FsEventWatcher private constructor(
         running = true
     }
 
-    public fun configureRawMode(rawMode: Boolean) {}
+    public fun configureRawMode(rawMode: Boolean) {
+        rawMode.hashCode()
+    }
 
     public fun callback(event: Event) {
         eventHandler.handleEvent(Result.success(event))
