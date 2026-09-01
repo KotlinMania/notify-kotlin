@@ -1,4 +1,4 @@
-// port-lint: tests notify/src/config.rs
+// port-lint: tests config.rs
 package io.github.kotlinmania.notify
 
 import kotlin.test.Test
