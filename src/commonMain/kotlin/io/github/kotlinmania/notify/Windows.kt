@@ -1,4 +1,4 @@
-// port-lint: source notify/src/windows.rs
+// port-lint: source windows.rs
 package io.github.kotlinmania.notify
 
 public class ReadData(

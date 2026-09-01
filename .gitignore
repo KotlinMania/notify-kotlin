@@ -36,6 +36,7 @@ kotlin-js-store/*
 tools/ast_distance/ast_distance
 tools/ast_distance/build/
 tools/ast_distance
+tools/ast_distance_bin
 
 # JVM heap dumps
 *.hprof

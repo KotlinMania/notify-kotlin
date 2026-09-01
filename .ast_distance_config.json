@@ -3,7 +3,7 @@
   "parity": false,
   "name": "notify-kotlin",
   "source": {
-    "path": "tmp",
+    "path": "tmp/notify/src",
     "lang": "rust"
   },
   "target": {
