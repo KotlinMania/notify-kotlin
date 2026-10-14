@@ -1,0 +1,5 @@
+headers = CoreServices/CoreServices.h CoreFoundation/CoreFoundation.h
+package = io.github.kotlinmania.notify.cinterop.fsevents
+
+compilerOpts = -framework CoreServices -framework CoreFoundation
+linkerOpts = -framework CoreServices -framework CoreFoundation

@@ -389,37 +389,64 @@ kotlin {
         }
     }
 
+    // Helper: configure FSEvents cinterop on Darwin targets (macOS/iOS/tvOS/watchOS).
+    // The FSEvents API is available on all Apple platforms via CoreServices/CoreFoundation.
+    fun KotlinNativeTarget.configureFseventCinterop() {
+        compilations.getByName("main") {
+            val fsevents by cinterops.creating {
+                definitionFile.set(project.file("src/nativeInterop/cinterop/fsevents.def"))
+            }
+        }
+    }
+
+    // Helper: configure inotify cinterop on Linux targets.
+    fun KotlinNativeTarget.configureInotifyCinterop() {
+        compilations.getByName("main") {
+            val inotify by cinterops.creating {
+                definitionFile.set(project.file("src/nativeInterop/cinterop/inotify.def"))
+            }
+        }
+    }
+
     // Apple — Tier 1/2 targets
     macosArm64 {
         configureBenchmarkCompilation()
+        configureFseventCinterop()
         addToXcf()
     }
     iosArm64 {
         configureBenchmarkCompilation()
+        configureFseventCinterop()
         addToXcf(static = true)
     }
     iosSimulatorArm64 {
         configureBenchmarkCompilation()
+        configureFseventCinterop()
         addToXcf(static = true)
     }
     tvosArm64 {
         configureBenchmarkCompilation()
+        configureFseventCinterop()
         addToXcf()
     }
     tvosSimulatorArm64 {
         configureBenchmarkCompilation()
+        configureFseventCinterop()
         addToXcf()
     }
     watchosArm64 {
         configureBenchmarkCompilation()
+        configureFseventCinterop()
         addToXcf()
     }
     watchosDeviceArm64 {
         configureBenchmarkCompilation()
+        configureFseventCinterop()
         addToXcf()
     }
     watchosSimulatorArm64 {
         configureBenchmarkCompilation()
+        configureFseventCinterop()
         addToXcf()
     }
 
@@ -427,12 +454,19 @@ kotlin {
     // Apple still ships x86_64 iOS simulator runtimes, so it is always built.
     iosX64 {
         configureBenchmarkCompilation()
+        configureFseventCinterop()
         addToXcf(static = true)
     }
 
     // Other native — Tier 1/2
-    linuxX64 { configureBenchmarkCompilation() }
-    linuxArm64 { configureBenchmarkCompilation() }
+    linuxX64 {
+        configureBenchmarkCompilation()
+        configureInotifyCinterop()
+    }
+    linuxArm64 {
+        configureBenchmarkCompilation()
+        configureInotifyCinterop()
+    }
     mingwX64 { configureBenchmarkCompilation() }
 
     // Android NDK — 64-bit only (32-bit retired §5.5.3, 2026-06-25).
@@ -495,6 +529,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
+            implementation(libs.tempfile.kotlin)
         }
         if (benchmarkEnabled) {
             val commonBenchmark = maybeCreate("commonBenchmark")

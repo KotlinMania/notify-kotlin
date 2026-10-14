@@ -1,13 +1,20 @@
 // port-lint: source windows.rs
 package io.github.kotlinmania.notify
 
+import io.github.kotlinmania.log.formatArgs
+import io.github.kotlinmania.log.trace
+import io.github.kotlinmania.windowssys.windows.win32.foundation.HANDLE
+import io.github.kotlinmania.windowssys.windows.win32.foundation.INVALID_HANDLE_VALUE
+
 public class ReadData(
     public val buffer: ByteArray = ByteArray(0),
+    public val completeSem: HANDLE = INVALID_HANDLE_VALUE,
 )
 
 public class ReadDirectoryRequest(
     public val path: String,
     public val recursive: Boolean,
+    public val handle: HANDLE = INVALID_HANDLE_VALUE,
 )
 
 public sealed class Action {
@@ -49,10 +56,12 @@ public class ReadDirectoryChangesServer(
     public fun run() {}
 
     public fun addWatch(path: String, recursiveBoolean: Boolean) {
+        trace(formatArgs("adding windows watch: {}", path))
         watches[path] = recursiveBoolean
     }
 
     public fun removeWatch(path: String) {
+        trace(formatArgs("removing windows watch: {}", path))
         watches.remove(path)
     }
 
