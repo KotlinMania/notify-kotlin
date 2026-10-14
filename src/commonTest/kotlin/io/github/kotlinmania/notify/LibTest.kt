@@ -1,6 +1,8 @@
 // port-lint: tests lib.rs
 package io.github.kotlinmania.notify
 
+import io.github.kotlinmania.io.files.Path
+import io.github.kotlinmania.io.files.SystemTemporaryDirectory
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -43,7 +45,7 @@ class LibTest {
                 res.getOrNull()?.let { received.add(it) }
             }.getOrThrow()
 
-        val path = "/tmp/integration_dir"
+        val path = Path(SystemTemporaryDirectory, "integration_dir").toString()
         val res = watcher.watch(path, RecursiveMode.Recursive)
         assertTrue(res.isSuccess)
 
@@ -53,18 +55,19 @@ class LibTest {
 
     @Test
     fun testWindowsTrashDir() {
-        val childDir = "/tmp/child"
+        val baseDir = Path(SystemTemporaryDirectory, "windows_trash_dir")
+        val childDir = Path(baseDir, "child").toString()
         val watcher = recommendedWatcher { }.getOrThrow()
         val res = watcher.watch(childDir, RecursiveMode.NonRecursive)
         assertTrue(res.isSuccess)
-        val res2 = watcher.watch("/tmp", RecursiveMode.NonRecursive)
+        val res2 = watcher.watch(baseDir.toString(), RecursiveMode.NonRecursive)
         assertTrue(res2.isSuccess)
     }
 
     @Test
     fun testPathsMut() {
-        val dirA = "/tmp/dirA"
-        val dirB = "/tmp/dirB"
+        val dirA = Path(SystemTemporaryDirectory, "dirA").toString()
+        val dirB = Path(SystemTemporaryDirectory, "dirB").toString()
 
         val watcher = RecommendedWatcher.new { }.getOrThrow()
         val paths = watcher.pathsMut()

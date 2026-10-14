@@ -1,6 +1,10 @@
 // port-lint: source inotify.rs
 package io.github.kotlinmania.notify
 
+import io.github.kotlinmania.log.debug
+import io.github.kotlinmania.log.formatArgs
+import io.github.kotlinmania.log.trace
+
 public class INotifyWatcher private constructor(
     private val eventHandler: EventHandler,
     private var config: Config,
@@ -49,9 +53,12 @@ public class INotifyWatcher private constructor(
             rawMode.hashCode()
         }
 
-        public fun handleInotify() {}
+        public fun handleInotify() {
+            debug(formatArgs("inotify event loop poll"))
+        }
 
         public fun addWatch(path: String, recursiveMode: RecursiveMode) {
+            trace(formatArgs("adding inotify watch: {}", path))
             watches[path] = recursiveMode
         }
 
@@ -59,7 +66,10 @@ public class INotifyWatcher private constructor(
             addWatch(path, recursiveMode)
         }
 
-        public fun removeWatch(path: String): Boolean = watches.remove(path) != null
+        public fun removeWatch(path: String): Boolean {
+            trace(formatArgs("removing inotify watch: {}", path))
+            return watches.remove(path) != null
+        }
 
         public fun removeAllWatches() {
             watches.clear()

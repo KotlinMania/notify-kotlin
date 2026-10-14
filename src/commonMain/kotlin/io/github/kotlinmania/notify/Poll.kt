@@ -1,6 +1,10 @@
 // port-lint: source poll.rs
 package io.github.kotlinmania.notify
 
+import io.github.kotlinmania.log.formatArgs
+import io.github.kotlinmania.log.trace
+import io.github.kotlinmania.log.warn
+
 /**
  * Event sent for registered handlers on initial directory scans.
  */
@@ -97,6 +101,7 @@ public class EventEmitter(
     }
 
     public fun emitIoErr(err: Throwable, path: String? = null) {
+        warn(formatArgs("walkdir error scanning {}", err))
         val error = Error.io(err).let { if (path != null) it.addPath(path) else it }
         emit(Result.failure(error))
     }
@@ -137,6 +142,7 @@ public class WatchData(
     private val paths = mutableMapOf<String, PathData>()
 
     public fun rescan(dataBuilder: DataBuilder) {
+        trace(formatArgs("rescanning {}", root))
         dataBuilder.updateTimestamp()
     }
 

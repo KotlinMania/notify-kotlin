@@ -1,0 +1,2 @@
+headers = sys/inotify.h
+package = io.github.kotlinmania.notify.cinterop.inotify
