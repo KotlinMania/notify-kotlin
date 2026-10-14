@@ -389,64 +389,42 @@ kotlin {
         }
     }
 
-    // Helper: configure FSEvents cinterop on Darwin targets (macOS/iOS/tvOS/watchOS).
-    // The FSEvents API is available on all Apple platforms via CoreServices/CoreFoundation.
-    fun KotlinNativeTarget.configureFseventCinterop() {
-        compilations.getByName("main") {
-            val fsevents by cinterops.creating {
-                definitionFile.set(project.file("src/nativeInterop/cinterop/fsevents.def"))
-            }
-        }
-    }
-
-    // Helper: configure inotify cinterop on Linux targets.
-    fun KotlinNativeTarget.configureInotifyCinterop() {
-        compilations.getByName("main") {
-            val inotify by cinterops.creating {
-                definitionFile.set(project.file("src/nativeInterop/cinterop/inotify.def"))
-            }
-        }
-    }
+    // NOTE: FSEvents/inotify cinterop was removed — the actuals use built-in
+    // platform libraries (platform.CoreServices on macOS, platform.linux on
+    // Linux) directly, so no .def-driven cinterop is needed. The .def files
+    // remain in src/nativeInterop/cinterop/ as documentation only.
 
     // Apple — Tier 1/2 targets
     macosArm64 {
         configureBenchmarkCompilation()
-        configureFseventCinterop()
         addToXcf()
     }
     iosArm64 {
         configureBenchmarkCompilation()
-        configureFseventCinterop()
         addToXcf(static = true)
     }
     iosSimulatorArm64 {
         configureBenchmarkCompilation()
-        configureFseventCinterop()
         addToXcf(static = true)
     }
     tvosArm64 {
         configureBenchmarkCompilation()
-        configureFseventCinterop()
         addToXcf()
     }
     tvosSimulatorArm64 {
         configureBenchmarkCompilation()
-        configureFseventCinterop()
         addToXcf()
     }
     watchosArm64 {
         configureBenchmarkCompilation()
-        configureFseventCinterop()
         addToXcf()
     }
     watchosDeviceArm64 {
         configureBenchmarkCompilation()
-        configureFseventCinterop()
         addToXcf()
     }
     watchosSimulatorArm64 {
         configureBenchmarkCompilation()
-        configureFseventCinterop()
         addToXcf()
     }
 
@@ -454,18 +432,15 @@ kotlin {
     // Apple still ships x86_64 iOS simulator runtimes, so it is always built.
     iosX64 {
         configureBenchmarkCompilation()
-        configureFseventCinterop()
         addToXcf(static = true)
     }
 
     // Other native — Tier 1/2
     linuxX64 {
         configureBenchmarkCompilation()
-        configureInotifyCinterop()
     }
     linuxArm64 {
         configureBenchmarkCompilation()
-        configureInotifyCinterop()
     }
     mingwX64 { configureBenchmarkCompilation() }
 
