@@ -39,9 +39,18 @@ public class KqueueWatcher private constructor(
 
         public fun handleEvent(msg: EventLoopMsg) {
             when (msg) {
-                is EventLoopMsg.AddWatch -> addWatch(msg.path, msg.recursiveMode)
-                is EventLoopMsg.RemoveWatch -> removeWatch(msg.path)
-                is EventLoopMsg.Shutdown -> running = false
+                is EventLoopMsg.AddWatch -> {
+                    addWatch(msg.path, msg.recursiveMode)
+                }
+
+                is EventLoopMsg.RemoveWatch -> {
+                    removeWatch(msg.path)
+                }
+
+                is EventLoopMsg.Shutdown -> {
+                    running = false
+                }
+
                 is EventLoopMsg.Configure -> {}
             }
         }

@@ -137,7 +137,7 @@ public class Error(
          * Similar to io, but specifically handles not found errors.
          */
         public fun ioWatch(err: Throwable): Error {
-            val msg = err.message ?: ""
+            val msg = err.message.orEmpty()
             return if (msg.contains("NotFound", ignoreCase = true) || msg.contains("No such file", ignoreCase = true)) {
                 pathNotFound()
             } else {

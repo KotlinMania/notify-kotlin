@@ -3,11 +3,26 @@
 // Uses the built-in Kotlin/Native platform library for Linux, which provides
 // inotify functions via platform.linux.
 @file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
+
 package io.github.kotlinmania.notify
 
-import kotlinx.cinterop.*
-import platform.linux.*
-import platform.posix.*
+import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.allocArray
+import kotlinx.cinterop.get
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.plus
+import kotlinx.cinterop.pointed
+import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.sizeOf
+import kotlinx.cinterop.toKString
+import kotlinx.cinterop.usePinned
+import platform.linux.inotify_add_watch
+import platform.linux.inotify_event
+import platform.linux.inotify_init1
+import platform.linux.inotify_rm_watch
+import platform.posix.read
 
 /**
  * Wraps an inotify file descriptor as a Kotlin handle.
@@ -28,11 +43,10 @@ public actual object NativeInotify {
         return handle
     }
 
-    public actual fun addWatch(fd: InotifyFdHandle, path: String, mask: UInt): Int {
-        return path.encodeToByteArray().usePinned { pinnedPath ->
+    public actual fun addWatch(fd: InotifyFdHandle, path: String, mask: UInt): Int =
+        path.encodeToByteArray().usePinned { pinnedPath ->
             inotify_add_watch(fd.fd, pinnedPath.addressOf(0), mask)
         }
-    }
 
     public actual fun removeWatch(fd: InotifyFdHandle, wd: Int): Boolean {
         val result = inotify_rm_watch(fd.fd, wd)
@@ -59,22 +73,23 @@ public actual object NativeInotify {
                 val event = eventPtr.pointed
 
                 val nameBytes = event.len.toInt()
-                val name = if (nameBytes > 0) {
-                    // The name field starts right after the fixed fields of inotify_event.
-                    val nameStart = offset + structSize
-                    val nameEnd = nameStart + nameBytes
-                    var nameLen = 0
-                    while (nameStart + nameLen < nameEnd && buffer[nameStart + nameLen].toInt() != 0) {
-                        nameLen++
-                    }
-                    if (nameLen > 0) {
-                        (bufferPtr + nameStart)!!.reinterpret<ByteVar>().toKString()
+                val name =
+                    if (nameBytes > 0) {
+                        // The name field starts right after the fixed fields of inotify_event.
+                        val nameStart = offset + structSize
+                        val nameEnd = nameStart + nameBytes
+                        var nameLen = 0
+                        while (nameStart + nameLen < nameEnd && buffer[nameStart + nameLen].toInt() != 0) {
+                            nameLen++
+                        }
+                        if (nameLen > 0) {
+                            (bufferPtr + nameStart)!!.reinterpret<ByteVar>().toKString()
+                        } else {
+                            ""
+                        }
                     } else {
                         ""
                     }
-                } else {
-                    ""
-                }
 
                 events.add(
                     InotifyEvent(
