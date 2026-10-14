@@ -1,11 +1,56 @@
 // port-lint: source fsevent.rs (real FSEvents FFI via cinterop with CoreServices/CoreFoundation)
 // Actual for all Darwin targets (macOS, iOS, tvOS, watchOS — all have FSEvents API).
 @file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
+
 package io.github.kotlinmania.notify
 
-import kotlinx.cinterop.*
-import platform.CoreFoundation.*
-import platform.CoreServices.*
+import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.COpaquePointer
+import kotlinx.cinterop.CPointed
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.CPointerVarOf
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.StableRef
+import kotlinx.cinterop.UIntVarOf
+import kotlinx.cinterop.ULongVarOf
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.allocArray
+import kotlinx.cinterop.asStableRef
+import kotlinx.cinterop.get
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.staticCFunction
+import kotlinx.cinterop.toKString
+import platform.CoreFoundation.CFArrayAppendValue
+import platform.CoreFoundation.CFArrayCreateMutable
+import platform.CoreFoundation.CFArrayGetCount
+import platform.CoreFoundation.CFArrayGetValueAtIndex
+import platform.CoreFoundation.CFArrayRef
+import platform.CoreFoundation.CFArrayRemoveValueAtIndex
+import platform.CoreFoundation.CFMutableArrayRef
+import platform.CoreFoundation.CFRelease
+import platform.CoreFoundation.CFRunLoopGetCurrent
+import platform.CoreFoundation.CFRunLoopRef
+import platform.CoreFoundation.CFRunLoopRun
+import platform.CoreFoundation.CFRunLoopStop
+import platform.CoreFoundation.CFStringCreateWithCString
+import platform.CoreFoundation.CFStringGetCString
+import platform.CoreFoundation.CFStringGetLength
+import platform.CoreFoundation.CFStringGetMaximumSizeForEncoding
+import platform.CoreFoundation.CFStringRef
+import platform.CoreFoundation.kCFRunLoopDefaultMode
+import platform.CoreFoundation.kCFStringEncodingUTF8
+import platform.CoreServices.FSEventStreamContext
+import platform.CoreServices.FSEventStreamCreate
+import platform.CoreServices.FSEventStreamFlushSync
+import platform.CoreServices.FSEventStreamInvalidate
+import platform.CoreServices.FSEventStreamRef
+import platform.CoreServices.FSEventStreamRelease
+import platform.CoreServices.FSEventStreamScheduleWithRunLoop
+import platform.CoreServices.FSEventStreamStart
+import platform.CoreServices.FSEventStreamStop
+import platform.CoreServices.FSEventStreamUnscheduleFromRunLoop
 
 /**
  * Wraps a CoreFoundation `FSEventStreamRef` as a Kotlin handle.
@@ -111,9 +156,8 @@ public actual object NativeFsevent {
         return removed
     }
 
-    public actual fun pathCount(paths: FseventPathsArrayHandle): Int {
-        return paths.arrayRef?.let { CFArrayGetCount(it).toInt() } ?: 0
-    }
+    public actual fun pathCount(paths: FseventPathsArrayHandle): Int =
+        paths.arrayRef?.let { CFArrayGetCount(it).toInt() } ?: 0
 
     public actual fun releasePathsArray(paths: FseventPathsArrayHandle) {
         paths.arrayRef?.let { CFRelease(it) }
@@ -134,24 +178,25 @@ public actual object NativeFsevent {
         val stableRef = StableRef.create(context)
 
         // Build the FSEventStreamContext struct in scoped memory.
-        val stream = memScoped {
-            val ctx = alloc<FSEventStreamContext>()
-            ctx.version = 0L
-            ctx.info = stableRef.asCPointer()
-            ctx.retain = null
-            ctx.release = null
-            ctx.copyDescription = null
+        val stream =
+            memScoped {
+                val ctx = alloc<FSEventStreamContext>()
+                ctx.version = 0L
+                ctx.info = stableRef.asCPointer()
+                ctx.retain = null
+                ctx.release = null
+                ctx.copyDescription = null
 
-            FSEventStreamCreate(
-                allocator = null,
-                callback = staticCFunction(::fseventCallbackTrampoline),
-                context = ctx.ptr,
-                pathsToWatch = array,
-                sinceWhen = sinceWhen,
-                latency = latency,
-                flags = flags,
-            )
-        }
+                FSEventStreamCreate(
+                    allocator = null,
+                    callback = staticCFunction(::fseventCallbackTrampoline),
+                    context = ctx.ptr,
+                    pathsToWatch = array,
+                    sinceWhen = sinceWhen,
+                    latency = latency,
+                    flags = flags,
+                )
+            }
 
         if (stream == null) {
             stableRef.dispose()

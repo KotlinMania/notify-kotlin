@@ -79,9 +79,18 @@ public class PathData(
                         null
                     }
                 }
-                old == null && new != null -> Event(EventKind.Create(CreateKind.Any), listOf(path))
-                old != null && new == null -> Event(EventKind.Remove(RemoveKind.Any), listOf(path))
-                else -> null
+
+                old == null && new != null -> {
+                    Event(EventKind.Create(CreateKind.Any), listOf(path))
+                }
+
+                old != null && new == null -> {
+                    Event(EventKind.Remove(RemoveKind.Any), listOf(path))
+                }
+
+                else -> {
+                    null
+                }
             }
     }
 }

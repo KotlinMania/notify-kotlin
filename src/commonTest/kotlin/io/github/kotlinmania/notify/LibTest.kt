@@ -48,6 +48,7 @@ class LibTest {
         val path = Path(SystemTemporaryDirectory, "integration_dir").toString()
         val res = watcher.watch(path, RecursiveMode.Recursive)
         assertTrue(res.isSuccess)
+        assertTrue(iterWithTimeout(received).isEmpty())
 
         val unwatchRes = watcher.unwatch(path)
         assertTrue(unwatchRes.isSuccess)
@@ -68,12 +69,19 @@ class LibTest {
     fun testPathsMut() {
         val dirA = Path(SystemTemporaryDirectory, "dirA").toString()
         val dirB = Path(SystemTemporaryDirectory, "dirB").toString()
+        val received = mutableListOf<Event>()
 
-        val watcher = RecommendedWatcher.new { }.getOrThrow()
+        val watcher =
+            RecommendedWatcher
+                .new({ res ->
+                    res.getOrNull()?.let { received.add(it) }
+                })
+                .getOrThrow()
         val paths = watcher.pathsMut()
         assertTrue(paths.add(dirA, RecursiveMode.Recursive).isSuccess)
         assertTrue(paths.add(dirB, RecursiveMode.Recursive).isSuccess)
         assertTrue(paths.commit().isSuccess)
+        assertTrue(iterWithTimeout(received).isEmpty())
 
         assertTrue(paths.remove(dirA).isSuccess)
         assertTrue(paths.commit().isSuccess)
