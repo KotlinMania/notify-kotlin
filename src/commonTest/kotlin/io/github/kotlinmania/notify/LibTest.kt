@@ -72,7 +72,7 @@ class LibTest {
         val received = mutableListOf<Event>()
 
         val watcher =
-            RecommendedWatcher
+            io.github.kotlinmania.notify.PollWatcher
                 .new({ res ->
                     res.getOrNull()?.let { received.add(it) }
                 })
