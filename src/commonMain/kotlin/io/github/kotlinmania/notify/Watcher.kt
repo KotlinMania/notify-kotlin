@@ -1,4 +1,3 @@
-// port-lint: source lib.rs
 package io.github.kotlinmania.notify
 
 /**
@@ -112,18 +111,18 @@ public class DefaultPathsMut(
 /**
  * The recommended Watcher implementation for the current platform.
  */
-public typealias RecommendedWatcher = PollWatcher
 
 /**
  * Convenience method for creating the RecommendedWatcher for the current platform.
  */
-public fun recommendedWatcher(eventHandler: EventHandler): Result<RecommendedWatcher> =
-    RecommendedWatcher.new(eventHandler, Config.default())
+public fun recommendedWatcher(eventHandler: EventHandler): Result<io.github.kotlinmania.notify.PollWatcher> =
+    io.github.kotlinmania.notify.PollWatcher
+        .new(eventHandler, Config.default())
 
 /**
  * Convenience method for creating the RecommendedWatcher with a lambda event handler.
  */
-public fun recommendedWatcher(eventHandler: (Result<Event>) -> Unit): Result<RecommendedWatcher> =
+public fun recommendedWatcher(eventHandler: (Result<Event>) -> Unit): Result<io.github.kotlinmania.notify.PollWatcher> =
     recommendedWatcher(EventHandler(eventHandler))
 
 public fun iterWithTimeout(events: List<Event>): List<Event> = events
