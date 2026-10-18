@@ -116,7 +116,8 @@ public class DefaultPathsMut(
  * Convenience method for creating the RecommendedWatcher for the current platform.
  */
 public fun recommendedWatcher(eventHandler: EventHandler): Result<io.github.kotlinmania.notify.PollWatcher> =
-    io.github.kotlinmania.notify.PollWatcher.new(eventHandler, Config.default())
+    io.github.kotlinmania.notify.PollWatcher
+        .new(eventHandler, Config.default())
 
 /**
  * Convenience method for creating the RecommendedWatcher with a lambda event handler.
